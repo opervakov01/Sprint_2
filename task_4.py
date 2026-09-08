@@ -8,31 +8,26 @@ class EmployeeSalary:
         self.email = email
 
     @classmethod
-    def get_hours(cls, name, hours=None, rest_days=None, email=None):
-        if hours is not None:
-            return hours
-        elif rest_days is not None:
-            calculated_hours = (7 - rest_days) * 8
-            return calculated_hours
-        else:
-            raise ValueError("Недостаточно данных для расчёта часов: укажите либо hours, либо rest_days")
+    def from_hours(cls, name, hours, email=None):
+        email = cls._get_email(name, email)
+        return cls(name=name, hours=hours, email=email)
 
     @classmethod
-    def get_email(cls, name, email=None):
+    def from_rest_days(cls, name, rest_days, email=None):
+        calculated_hours = (7 - rest_days) * 8
+        email = cls._get_email(name, email)
+        return cls(name=name, hours=calculated_hours, rest_days=rest_days, email=email)
+
+    @staticmethod
+    def _get_email(name, email=None):
         if email is not None:
             return email
         else:
-            generated_email = f"{name}@email.com"
-            return generated_email
+            return f"{name}@email.com"
 
     @classmethod
     def set_hourly_payment(cls, new_payment):
         cls.hourly_payment = new_payment
 
     def salary(self):
-        
-        if self.hours is None:
-            self.hours = self.get_hours(self.name, self.hours, self.rest_days, self.email)       
-        if self.email is None:
-            self.email = self.get_email(self.name, self.email) 
         return self.hours * self.hourly_payment
